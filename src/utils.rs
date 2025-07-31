@@ -11,7 +11,7 @@ impl<T: AsRef<[u8]>> fmt::Debug for HexSlice<T> {
             if i != 0 {
                 f.write_str(", ")?;
             }
-            write!(f, "{:02x}", byte)?;
+            write!(f, "{byte:02x}")?;
         }
         f.write_str("]")
     }

@@ -1,5 +1,5 @@
 [package]
-name = "w25q"
+name = "spi-memory"
 version = "0.2.9"
 authors = ["Jonas Schievink <jonasschievink@gmail.com>", "Henrik Böving <hargonix@gmail.com>", "David O'Connor <the_alchemist@fastmail.com>", "Diego Frenoux <diego@churrosoft.ar>"]
 edition = "2018"
@@ -10,31 +10,6 @@ keywords = ["embedded-hal-driver", "serial", "flash", "eeprom", "spi"]
 categories = ["embedded"]
 readme = "README.md"
 license = "0BSD"
-
-# cargo-release configuration
-[package.metadata.release]
-tag-message = "{{version}}"
-no-dev-version = true
-pre-release-commit-message = "Release {{version}}"
-
-# Change the changelog's `Unreleased` section to refer to this release and
-# prepend new `Unreleased` section
-[[package.metadata.release.pre-release-replacements]]
-file    = "CHANGELOG.md"
-search  = "## Unreleased"
-replace = "## Unreleased\n\nNo changes.\n\n## {{version}} - {{date}}"
-
-# Bump the version inside the example manifest in `README.md`
-[[package.metadata.release.pre-release-replacements]]
-file    = "README.md"
-search  = 'w25q = "[a-z0-9\\.-]+"'
-replace = 'w25q = "{{version}}"'
-
-# Bump the version referenced by the `html_root_url` attribute in `lib.rs`
-[[package.metadata.release.pre-release-replacements]]
-file    = "src/lib.rs"
-search  = "https://docs.rs/w25q/[a-z0-9\\.-]+"
-replace = "https://docs.rs/w25q/{{version}}"
 
 [dependencies]
 embedded-hal = "0.2.5"

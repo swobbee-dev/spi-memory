@@ -9,7 +9,7 @@
 //! [`embedded-hal`]: https://docs.rs/embedded-hal/
 
 #![doc(html_root_url = "https://docs.rs/spi-memory/0.2.0")]
-#![warn(missing_debug_implementations, rust_2018_idioms)]
+#![warn(missing_debug_implementations)]
 #![cfg_attr(not(test), no_std)]
 
 #[macro_use]

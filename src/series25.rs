@@ -273,7 +273,13 @@ impl<SPI: SpiDevice, D: DelayNs> Flash<SPI, D> {
     #[maybe_async]
     pub async fn wait_done(&mut self) -> Result<(), Error<SPI>> {
         while self.read_status().await?.contains(Status::BUSY) {
-            self.delay.delay_us(1).await;
+            // Programming times (typical/maximum):
+            // - Byte programming: 20-50μs (first byte), <10μs (additional bytes)
+            // - Page programming: 0.7-3ms
+            // - Sector erase: 45-60ms (typical), 400ms (max)
+            // - Block erase: 120-150ms (typical), 1.6-2s (max)
+            // Byte programming will read status READY without delay anyway, so 1ms is a good value here
+            self.delay.delay_ms(1).await;
         }
         Ok(())
     }

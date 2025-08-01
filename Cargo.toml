@@ -27,11 +27,12 @@ defmt = "1.0.1"
 defmt-rtt = "1.0.0"
 embedded-hal = "1.0.0"
 embedded-hal-bus = "0.3.0"
-embassy-embedded-hal = "0.3.0"
+embassy-embedded-hal = "0.3.1"
 embassy-stm32 = { version = "0.2.0", features = ["defmt", "stm32f765vg", "time-driver-any", "exti", "unstable-pac", "memory-x"] }
 embassy-time = { version = "0.4.0", features = ["defmt", "tick-hz-32_768"] }
 heapless = "0.8.0"
 embassy-sync = "0.7.0"
+embassy-executor = { version = "0.7.0", features = ["arch-cortex-m", "executor-thread"] }
 
 [features]
 default = ["is_sync"]
@@ -44,3 +45,6 @@ panic = "abort"
 [[example]]
 name = "sync"
 required-features = ["is_sync"]
+
+[[example]]
+name = "asynch"

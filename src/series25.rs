@@ -4,13 +4,18 @@ use crate::{Error, utils::HexSlice};
 use bitflags::bitflags;
 use core::convert::TryInto;
 use core::fmt;
-use embedded_hal::delay::DelayNs;
 use maybe_async::maybe_async;
 
 #[cfg(feature = "is_sync")]
-use embedded_hal::spi::{Operation, SpiDevice};
+use embedded_hal::{
+    delay::DelayNs,
+    spi::{Operation, SpiDevice},
+};
 #[cfg(not(feature = "is_sync"))]
-use embedded_hal_async::spi::{Operation, SpiDevice};
+use embedded_hal_async::{
+    delay::DelayNs,
+    spi::{Operation, SpiDevice},
+};
 
 /// 3-Byte JEDEC manufacturer and device identification.
 pub struct Identification {
@@ -140,11 +145,15 @@ impl fmt::Debug for FlashInfo {
 ///
 /// * **`SPI`**: The SPI device to which the flash chip is attached.
 #[derive(Debug)]
-pub struct Flash<SPI> {
+pub struct Flash<SPI, D>
+where
+    D: DelayNs,
+{
     spi: SPI,
+    delay: D,
 }
 
-impl<SPI: SpiDevice> Flash<SPI> {
+impl<SPI: SpiDevice, D: DelayNs> Flash<SPI, D> {
     /// Creates a new 25-series flash driver.
     ///
     /// # Parameters
@@ -152,8 +161,8 @@ impl<SPI: SpiDevice> Flash<SPI> {
     /// * **`spi`**: An SPI device. Must be configured to operate in the correct
     ///   mode for the device.
     #[maybe_async]
-    pub async fn init(spi: SPI) -> Result<Self, Error<SPI>> {
-        let mut this = Self { spi };
+    pub async fn init(spi: SPI, delay: D) -> Result<Self, Error<SPI>> {
+        let mut this = Self { spi, delay };
 
         let status = this.read_status().await?;
         info!("Flash::init: status = {:?}", status);
@@ -282,15 +291,11 @@ impl<SPI: SpiDevice> Flash<SPI> {
     ///
     /// Note: must manually delay after running this, IOC
     #[maybe_async]
-    pub async fn release_power_down<D: DelayNs>(
-        &mut self,
-        delay: &mut D,
-    ) -> Result<(), Error<SPI>> {
+    pub async fn release_power_down(&mut self) -> Result<(), Error<SPI>> {
         // Same command as reading ID.. Wakes instead of reading ID if not followed by 3 dummy bytes.
         let buf = [Opcode::ReadDeviceId as u8];
         self.spi.write(&buf).await.map_err(Error::Spi)?;
-
-        delay.delay_ns(6_000); // Table 9.7: AC Electrical Characteristics: tRES1 = max 3us.
+        self.delay.delay_us(3).await; // Table 9.7: AC Electrical Characteristics: tRES1 = max 3us.
 
         Ok(())
     }

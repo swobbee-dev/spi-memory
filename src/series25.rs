@@ -118,6 +118,27 @@ bitflags! {
     }
 }
 
+#[cfg(feature = "defmt")]
+impl defmt::Format for Status {
+    fn format(&self, f: defmt::Formatter<'_>) {
+        defmt::write!(f, "Status({:02x}:", self.bits());
+        if self.contains(Status::BUSY) {
+            defmt::write!(f, "BUSY ");
+        }
+        if self.contains(Status::WEL) {
+            defmt::write!(f, "WEL ");
+        }
+        let prot_level = (self.bits() & Status::PROT.bits()) >> 2;
+        if prot_level != 0 {
+            defmt::write!(f, "PROT{} ", prot_level);
+        }
+        if self.contains(Status::SRWD) {
+            defmt::write!(f, "SRWD ");
+        }
+        defmt::write!(f, ")");
+    }
+}
+
 pub struct FlashInfo {
     pub id: u32,
     pub page_size: u16,

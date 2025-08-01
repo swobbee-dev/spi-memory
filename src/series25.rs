@@ -251,8 +251,9 @@ impl<SPI: SpiDevice, D: DelayNs> Flash<SPI, D> {
 
     #[maybe_async]
     pub async fn wait_done(&mut self) -> Result<(), Error<SPI>> {
-        // TODO: Consider changing this to a delay based pattern
-        while self.read_status().await?.contains(Status::BUSY) {}
+        while self.read_status().await?.contains(Status::BUSY) {
+            self.delay.delay_us(1).await;
+        }
         Ok(())
     }
 

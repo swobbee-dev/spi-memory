@@ -15,6 +15,8 @@ license = "0BSD"
 embedded-hal = "1.0.0"
 log = { version = "0.4.27", optional = true }
 bitflags = "2.9.1"
+embedded-hal-async = "1.0.0"
+maybe-async = "0.2.10"
 
 [dev-dependencies]
 cortex-m = { version = "0.7.7", features = ["critical-section-single-core"] }
@@ -31,10 +33,14 @@ embassy-time = { version = "0.4.0", features = ["defmt", "tick-hz-32_768"] }
 heapless = "0.8.0"
 embassy-sync = "0.7.0"
 
+[features]
+default = ["is_sync"]
+is_sync = ["maybe-async/is_sync"]
+
 [profile.dev]
 opt-level = "z"
 panic = "abort"
 
 [[example]]
-name = "stm32f7"
-required-features = []
+name = "sync"
+required-features = ["is_sync"]

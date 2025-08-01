@@ -1,5 +1,9 @@
 use core::fmt::{self, Debug, Display};
+
+#[cfg(feature = "is_sync")]
 use embedded_hal::spi::SpiDevice;
+#[cfg(not(feature = "is_sync"))]
+use embedded_hal_async::spi::SpiDevice;
 
 mod private {
     #[derive(Debug)]

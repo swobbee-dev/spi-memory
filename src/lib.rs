@@ -21,7 +21,10 @@ mod utils;
 
 pub use crate::error::Error;
 
+#[cfg(feature = "is_sync")]
 use embedded_hal::spi::SpiDevice;
+#[cfg(not(feature = "is_sync"))]
+use embedded_hal_async::spi::SpiDevice;
 
 /// A trait for reading operations from a memory chip.
 pub trait Read<Addr, SPI: SpiDevice> {
@@ -40,12 +43,8 @@ pub trait BlockDevice<Addr, SPI: SpiDevice> {
     /// # Parameters
     /// * `addr`: The address to start erasing at. If the address is not on a sector boundary,
     ///   the lower bits can be ignored in order to make it fit.
-    fn erase_sectors(
-        &mut self,
-        spi: &mut SPI,
-        addr: Addr,
-        amount: usize,
-    ) -> Result<(), Error<SPI>>;
+    fn erase_sectors(&mut self, spi: &mut SPI, addr: Addr, amount: usize)
+    -> Result<(), Error<SPI>>;
 
     // Erases one block
     fn erase_block(&mut self, addr: u32) -> Result<(), Error<SPI>>;
@@ -62,10 +61,6 @@ pub trait BlockDevice<Addr, SPI: SpiDevice> {
     /// # Parameters
     /// * `addr`: The address to write to.
     /// * `data`: The bytes to write to `addr`.
-    fn write_bytes(
-        &mut self,
-        spi: &mut SPI,
-        addr: Addr,
-        data: &mut [u8],
-    ) -> Result<(), Error<SPI>>;
+    fn write_bytes(&mut self, spi: &mut SPI, addr: Addr, data: &mut [u8])
+    -> Result<(), Error<SPI>>;
 }

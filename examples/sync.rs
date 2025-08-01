@@ -2,7 +2,7 @@
 //!
 //! To build this example, use:
 //! ```
-//! cargo build --example sync
+//! cargo build --example sync --features blocking
 //! ```
 
 #![no_std]

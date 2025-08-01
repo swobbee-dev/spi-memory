@@ -6,12 +6,12 @@ use core::convert::TryInto;
 use core::fmt;
 use maybe_async::maybe_async;
 
-#[cfg(feature = "is_sync")]
+#[cfg(feature = "blocking")]
 use embedded_hal::{
     delay::DelayNs,
     spi::{Operation, SpiDevice},
 };
-#[cfg(not(feature = "is_sync"))]
+#[cfg(not(feature = "blocking"))]
 use embedded_hal_async::{
     delay::DelayNs,
     spi::{Operation, SpiDevice},

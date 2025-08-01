@@ -21,9 +21,9 @@ mod utils;
 
 pub use crate::error::Error;
 
-#[cfg(feature = "is_sync")]
+#[cfg(feature = "blocking")]
 use embedded_hal::spi::SpiDevice;
-#[cfg(not(feature = "is_sync"))]
+#[cfg(not(feature = "blocking"))]
 use embedded_hal_async::spi::SpiDevice;
 
 /// A trait for reading operations from a memory chip.

@@ -3,6 +3,8 @@
 ## Unreleased
 
 * Implement `Display` for `Error`
+* Migrate to embedded-hal 1.0 and update dependencies
+* SpiDevice for initialization
 
 ## 0.2.0 - 2020-03-25
 

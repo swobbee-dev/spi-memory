@@ -2,7 +2,7 @@
 //!
 //! To build this example, use:
 //! ```
-//! cargo build --example async --no-default-features
+//! cargo build --example asynch --no-default-features
 //! ```
 
 #![no_std]

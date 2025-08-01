@@ -42,10 +42,3 @@ is_sync = ["maybe-async/is_sync"]
 [profile.dev]
 opt-level = "z"
 panic = "abort"
-
-[[example]]
-name = "sync"
-required-features = ["is_sync"]
-
-[[example]]
-name = "asynch"

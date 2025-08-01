@@ -278,8 +278,7 @@ impl<SPI: SpiDevice, D: DelayNs> Flash<SPI, D> {
             // - Page programming: 0.7-3ms
             // - Sector erase: 45-60ms (typical), 400ms (max)
             // - Block erase: 120-150ms (typical), 1.6-2s (max)
-            // Byte programming will read status READY without delay anyway, so 1ms is a good value here
-            self.delay.delay_ms(1).await;
+            self.delay.delay_us(100).await;
         }
         Ok(())
     }

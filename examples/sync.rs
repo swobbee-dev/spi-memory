@@ -1,3 +1,10 @@
+//! Async SPI Memory Example
+//!
+//! To build this example, use:
+//! ```
+//! cargo build --example sync
+//! ```
+
 #![no_std]
 #![no_main]
 
@@ -113,26 +120,6 @@ fn main() -> ! {
             defmt::info!("Data at 0x{:04x}: {:02x}", addr, buffer.as_slice());
         }
     }
-
-    // // Test 5: Erase all memory - this can take some time
-    // defmt::info!("Erasing entire memory chip...");
-    // if let Err(_e) = flash.erase_all() {
-    //     defmt::error!("Failed to erase entire memory chip");
-    //     debug::exit(debug::EXIT_FAILURE);
-    // }
-    // // Verify that the memory is erased
-    // let mut buffer = [0u8; 256];
-    // if let Err(_e) = flash.read(0, &mut buffer) {
-    //     defmt::error!("Failed to read back erased memory");
-    //     debug::exit(debug::EXIT_FAILURE);
-    // } else {
-    //     // Verify that all bytes are 0xFF
-    //     assert!(
-    //         buffer.iter().all(|&b| b == 0xFF),
-    //         "Memory not erased properly"
-    //     );
-    // }
-    // defmt::info!("Memory erased successfully!");
 
     defmt::info!("All tests completed successfully!");
 

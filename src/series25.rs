@@ -377,10 +377,20 @@ impl<SPI: SpiDevice, D: DelayNs> Flash<SPI, D> {
 
     #[maybe_async]
     pub async fn write_bytes(&mut self, addr: u32, data: &[u8]) -> Result<(), Error<SPI>> {
-        for (c, chunk) in data.chunks(256).enumerate() {
+        let mut current_addr = addr;
+        let mut data_to_write = data;
+
+        while !data_to_write.is_empty() {
+            // Calculate how many bytes we can write before hitting the next page boundary.
+            let offset_in_page = current_addr & 0xFF;
+            let space_left_in_page = 256 - offset_in_page as usize;
+
+            // The chunk size is the smaller of the space left or all the remaining data.
+            let chunk_size = space_left_in_page.min(data_to_write.len());
+            let chunk = &data_to_write[..chunk_size];
+
             self.write_enable().await?;
 
-            let current_addr: u32 = (addr as usize + c * 256).try_into().unwrap();
             let cmd_buf = [
                 Opcode::PageProg as u8,
                 (current_addr >> 16) as u8,
@@ -392,7 +402,11 @@ impl<SPI: SpiDevice, D: DelayNs> Flash<SPI, D> {
                 .transaction(&mut [Operation::Write(&cmd_buf), Operation::Write(chunk)])
                 .await
                 .map_err(Error::Spi)?;
+
             self.wait_done().await?;
+
+            current_addr += chunk_size as u32;
+            data_to_write = &data_to_write[chunk_size..];
         }
         Ok(())
     }
